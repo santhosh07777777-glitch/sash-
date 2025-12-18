@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Placement Preparation Generator</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f8;
+    display:flex;
+    justify-content:center;
+    padding:30px;
+}
+.card{
+    background:#fff;
+    width:460px;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 12px rgba(0,0,0,0.15);
+}
+h2{text-align:center}
+label{
+    font-weight:bold;
+    margin-top:10px;
+    display:block;
+}
+input, select, button{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+}
+button{
+    background:#1976d2;
+    color:white;
+    border:none;
+    margin-top:15px;
+    cursor:pointer;
+    font-size:15px;
+}
+button:hover{background:#125aa0}
+.output{
+    margin-top:20px;
+    max-height:380px;
+    overflow-y:auto;
+}
+.month{
+    background:#eef3ff;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:6px;
+}
+.credit{
+    font-size:11px;
+    text-align:center;
+    color:gray;
+    margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h2>Placement Preparation Generator</h2>
+
+<label>Preparation Level</label>
+<select id="level">
+    <option value="beginner">Beginner</option>
+    <option value="intermediate">Intermediate</option>
+    <option value="advanced">Advanced</option>
+</select>
+
+<label>Company Type</label>
+<select id="company">
+    <option value="service">Service Based Company</option>
+    <option value="product">Product Based Company</option>
+</select>
+
+<label>Enter months remain</label>
+<input type="number" id="months" min="1" max="48" placeholder="1 to 48">
+
+<button onclick="generatePlan()">Generate Monthly Plan</button>
+
+<div class="output" id="output"></div>
+
+<div class="credit">@santhoshKumar</div>
+</div>
+
+<script>
+function generatePlan(){
+    const months = parseInt(document.getElementById("months").value);
+    const level = document.getElementById("level").value;
+    const company = document.getElementById("company").value;
+    const output = document.getElementById("output");
+
+    output.innerHTML = "";
+
+    if(isNaN(months) || months < 1 || months > 48){
+        output.innerHTML = "<p>Please enter valid months (1–48)</p>";
+        return;
+    }
+
+    // Level weight ensures SAME MONTH ≠ SAME OUTPUT
+    const levelWeight = level === "beginner" ? 1 :
+                        level === "intermediate" ? 2 : 3;
+
+    for(let i = 1; i <= months; i++){
+        let focusIndex = (i + levelWeight) % 6;
+        let focus = "";
+
+        switch(focusIndex){
+            case 0: focus = "Programming fundamentals & syntax mastery"; break;
+            case 1: focus = "Problem solving & logical thinking"; break;
+            case 2: focus = "Data structures practice"; break;
+            case 3: focus = "Aptitude & reasoning improvement"; break;
+            case 4: focus = "Mini projects & application building"; break;
+            case 5: focus = "Mock tests & weak area analysis"; break;
+        }
+
+        let depth = "";
+        if(level === "beginner"){
+            depth = "Basic understanding with simple problems";
+        }else if(level === "intermediate"){
+            depth = "Medium-level problems with optimization";
+        }else{
+            depth = "Advanced problems & interview-level preparation";
+        }
+
+        let companyAddOn = company === "product"
+            ? " + LeetCode / competitive coding focus"
+            : " + Service company pattern questions";
+
+        output.innerHTML += `
+        <div class="month">
+            <b>Month ${i}</b><br>
+            Focus: ${focus}<br>
+            Depth: ${depth}<br>
+            Target: ${companyAddOn}
+        </div>`;
+    }
+}
+</script>
+
+</body>
+</html>
